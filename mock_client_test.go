@@ -17,8 +17,8 @@ package gonsumer
 
 import (
 	"fmt"
-	"github.com/serejja/siesta"
 	log "github.com/golang/glog"
+	"github.com/serejja/siesta"
 	"gopkg.in/stretchr/testify.v1/assert"
 	"testing"
 )

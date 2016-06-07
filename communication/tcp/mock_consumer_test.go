@@ -15,8 +15,8 @@ package tcp
 
 import (
 	"fmt"
-	"github.com/serejja/gonsumer"
 	log "github.com/golang/glog"
+	"github.com/serejja/gonsumer"
 	"sync"
 )
 

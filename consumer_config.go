@@ -16,8 +16,8 @@ limitations under the License. */
 package gonsumer
 
 import (
-	"github.com/serejja/siesta"
 	"github.com/satori/go.uuid"
+	"github.com/serejja/siesta"
 	"time"
 )
 
@@ -59,8 +59,8 @@ func NewConsumerConfig() *ConsumerConfig {
 	return &ConsumerConfig{
 		Group:             "gonsumer-group",
 		ConsumerID:        uuid.NewV4().String(),
-		KeyDecoder:        new(ByteDecoder),
-		ValueDecoder:      new(ByteDecoder),
+		KeyDecoder:        ByteDecoder,
+		ValueDecoder:      ByteDecoder,
 		AutoOffsetReset:   siesta.EarliestTime,
 		InitOffsetBackoff: 500 * time.Millisecond,
 	}

@@ -16,9 +16,9 @@ limitations under the License. */
 package gonsumer
 
 import (
-	"github.com/serejja/siesta"
 	log "github.com/golang/glog"
 	"github.com/rcrowley/go-metrics"
+	"github.com/serejja/siesta"
 	"sync/atomic"
 	"time"
 )
@@ -296,12 +296,12 @@ func (pc *KafkaPartitionConsumer) resetOffset() bool {
 
 func (pc *KafkaPartitionConsumer) collectorFunc(messages *[]*MessageAndMetadata) func(topic string, partition int32, offset int64, key []byte, value []byte) error {
 	return func(topic string, partition int32, offset int64, key []byte, value []byte) error {
-		decodedKey, err := pc.config.KeyDecoder.Decode(key)
+		decodedKey, err := pc.config.KeyDecoder(key)
 		if err != nil {
 			log.Warning(err.Error())
 			return err
 		}
-		decodedValue, err := pc.config.ValueDecoder.Decode(value)
+		decodedValue, err := pc.config.ValueDecoder(value)
 		if err != nil {
 			log.Warning(err.Error())
 			return err
