@@ -16,9 +16,9 @@ limitations under the License. */
 package gonsumer
 
 import (
-	log "github.com/golang/glog"
 	"github.com/rcrowley/go-metrics"
 	"github.com/serejja/siesta"
+	"github.com/yanzay/log"
 	"sync/atomic"
 	"time"
 )
@@ -98,7 +98,7 @@ func (pc *KafkaPartitionConsumer) Start() {
 		select {
 		case <-pc.stop:
 			{
-				log.Info("Stopping fetcher loop for topic %s, partition %d", pc.topic, pc.partition)
+				log.Infof("Stopping fetcher loop for topic %s, partition %d", pc.topic, pc.partition)
 				return
 			}
 		default:
@@ -120,7 +120,7 @@ func (pc *KafkaPartitionConsumer) Start() {
 				})
 
 				if err != nil {
-					log.Warning("Fetch error: %s", err)
+					log.Warningf("Fetch error: %s", err)
 					pc.metrics.NumFailedFetches(func(numFailedFetches metrics.Counter) {
 						numFailedFetches.Inc(1)
 					})
@@ -185,7 +185,7 @@ func (pc *KafkaPartitionConsumer) Start() {
 					offset := messages[len(messages)-1].Offset
 					err = pc.Commit(offset)
 					if err != nil {
-						log.Warning("Could not commit offset %d for topic %s, partition %d", offset, pc.topic, pc.partition)
+						log.Warningf("Could not commit offset %d for topic %s, partition %d", offset, pc.topic, pc.partition)
 					}
 				}
 			}
@@ -196,7 +196,7 @@ func (pc *KafkaPartitionConsumer) Start() {
 // Stop stops consuming partition from Kafka.
 // This means the PartitionConsumer will stop accepting new batches but will have a chance to finish its current work.
 func (pc *KafkaPartitionConsumer) Stop() {
-	log.Info("Stopping partition consumer for topic %s, partition %d", pc.topic, pc.partition)
+	log.Infof("Stopping partition consumer for topic %s, partition %d", pc.topic, pc.partition)
 	pc.stop <- struct{}{}
 	pc.metrics.Stop()
 }
@@ -250,7 +250,7 @@ func (pc *KafkaPartitionConsumer) initOffset() bool {
 			if err == siesta.ErrUnknownTopicOrPartition {
 				return pc.resetOffset()
 			}
-			log.Warning("Cannot get offset for group %s, topic %s, partition %d: %s\n", pc.config.Group, pc.topic, pc.partition, err)
+			log.Warningf("Cannot get offset for group %s, topic %s, partition %d: %s\n", pc.config.Group, pc.topic, pc.partition, err)
 			select {
 			case <-pc.stop:
 				{
@@ -275,7 +275,7 @@ func (pc *KafkaPartitionConsumer) resetOffset() bool {
 	for {
 		offset, err := pc.client.GetAvailableOffset(pc.topic, pc.partition, pc.config.AutoOffsetReset)
 		if err != nil {
-			log.Warning("Cannot get available offset for topic %s, partition %d: %s", pc.topic, pc.partition, err)
+			log.Warningf("Cannot get available offset for topic %s, partition %d: %s", pc.topic, pc.partition, err)
 			select {
 			case <-pc.stop:
 				{

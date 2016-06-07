@@ -304,7 +304,7 @@ func TestPartitionConsumerMetrics(t *testing.T) {
 	// now add
 	consumer.Add("foo", 0)
 
-	m, err = consumer.PartitionConsumerMetrics("foo", 0)
+	_, err = consumer.PartitionConsumerMetrics("foo", 0)
 	assert.Nil(t, err)
 }
 
