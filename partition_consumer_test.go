@@ -34,35 +34,35 @@ func NewMockPartitionConsumer(client Client, config *ConsumerConfig, topic strin
 }
 
 func (mpc *MockPartitionConsumer) Start() {
-	log.Infof("MockPartitionConsumer.Start()")
+	log.Debugf("MockPartitionConsumer.Start()")
 }
 
 func (mpc *MockPartitionConsumer) Stop() {
-	log.Infof("MockPartitionConsumer.Stop()")
+	log.Debugf("MockPartitionConsumer.Stop()")
 }
 
 func (mpc *MockPartitionConsumer) Offset() int64 {
-	log.Infof("MockPartitionConsumer.Offset()")
+	log.Debugf("MockPartitionConsumer.Offset()")
 	return mpc.offset
 }
 
 func (mpc *MockPartitionConsumer) Commit(offset int64) error {
-	log.Infof("MockPartitionConsumer.Commit()")
+	log.Debugf("MockPartitionConsumer.Commit()")
 	return nil
 }
 
 func (mpc *MockPartitionConsumer) SetOffset(offset int64) {
-	log.Infof("MockPartitionConsumer.SetOffset()")
+	log.Debugf("MockPartitionConsumer.SetOffset()")
 	mpc.offset = offset
 }
 
 func (mpc *MockPartitionConsumer) Lag() int64 {
-	log.Infof("MockPartitionConsumer.Lag()")
+	log.Debugf("MockPartitionConsumer.Lag()")
 	return mpc.lag
 }
 
 func (mpc *MockPartitionConsumer) Metrics() (PartitionConsumerMetrics, error) {
-	log.Infof("MockPartitionConsumer.Metrics()")
+	log.Debugf("MockPartitionConsumer.Metrics()")
 	return nil, nil
 }
 
