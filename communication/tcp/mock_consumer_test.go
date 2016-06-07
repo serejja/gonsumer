@@ -15,7 +15,7 @@ package tcp
 
 import (
 	"fmt"
-	"github.com/elodina/gonzo"
+	"github.com/serejja/gonsumer"
 	log "github.com/golang/glog"
 	"sync"
 )
@@ -149,15 +149,15 @@ func (mc *MockConsumer) Join() {
 	mc.assignmentsWaitGroup.Wait()
 }
 
-func (mc *MockConsumer) ConsumerMetrics() (gonzo.ConsumerMetrics, error) {
+func (mc *MockConsumer) ConsumerMetrics() (gonsumer.ConsumerMetrics, error) {
 	return nil, nil
 }
 
-func (mc *MockConsumer) PartitionConsumerMetrics(topic string, partition int32) (gonzo.PartitionConsumerMetrics, error) {
+func (mc *MockConsumer) PartitionConsumerMetrics(topic string, partition int32) (gonsumer.PartitionConsumerMetrics, error) {
 	return nil, nil
 }
 
-func (mc *MockConsumer) AllMetrics() (*gonzo.Metrics, error) {
+func (mc *MockConsumer) AllMetrics() (*gonsumer.Metrics, error) {
 	return nil, nil
 }
 

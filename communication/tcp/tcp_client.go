@@ -22,14 +22,14 @@ import (
 	"net"
 )
 
-// Client is a TCP client that can talk to a Gonzo consumer instance wrapped by TCP layer.
+// Client is a TCP client that can talk to a Gonsumer instance wrapped by TCP layer.
 type Client struct {
 	address        string
 	connection     net.Conn
 	responseReader *bufio.Reader
 }
 
-// NewClient creates a new TCP client to talk to a Gonzo consumer instance located via given address.
+// NewClient creates a new TCP client to talk to a Gonsumer instance located via given address.
 // Returns a tcp client and an error if TCP connection failed.
 func NewClient(addr string) (*Client, error) {
 	connection, err := net.Dial("tcp", addr)

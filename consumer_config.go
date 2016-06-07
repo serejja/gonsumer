@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-package gonzo
+package gonsumer
 
 import (
-	"github.com/elodina/siesta"
+	"github.com/serejja/siesta"
 	"github.com/satori/go.uuid"
 	"time"
 )
@@ -57,7 +57,7 @@ type ConsumerConfig struct {
 // NewConsumerConfig creates a consumer config with sane defaults.
 func NewConsumerConfig() *ConsumerConfig {
 	return &ConsumerConfig{
-		Group:             "gonzo-group",
+		Group:             "gonsumer-group",
 		ConsumerID:        uuid.NewV4().String(),
 		KeyDecoder:        new(ByteDecoder),
 		ValueDecoder:      new(ByteDecoder),

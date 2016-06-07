@@ -17,8 +17,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/elodina/gonzo"
-	"github.com/elodina/siesta"
+	"github.com/serejja/gonsumer"
+	"github.com/serejja/siesta"
 )
 
 func main() {
@@ -30,14 +30,14 @@ func main() {
 		panic(err)
 	}
 
-	consumer := gonzo.NewConsumer(client, gonzo.NewConsumerConfig(), consumerStrategy)
-	consumer.Add("gonzo", 0)
-	consumer.Add("gonzo", 1)
+	consumer := gonsumer.NewConsumer(client, gonsumer.NewConsumerConfig(), consumerStrategy)
+	consumer.Add("gonsumer", 0)
+	consumer.Add("gonsumer", 1)
 
 	consumer.Join()
 }
 
-func consumerStrategy(data *gonzo.FetchData, consumer *gonzo.KafkaPartitionConsumer) {
+func consumerStrategy(data *gonsumer.FetchData, consumer *gonsumer.KafkaPartitionConsumer) {
 	if data.Error != nil {
 		panic(data.Error)
 	}

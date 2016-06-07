@@ -19,25 +19,25 @@ import (
 	"bufio"
 	"encoding/json"
 	"errors"
-	"github.com/elodina/gonzo"
+	"github.com/serejja/gonsumer"
 	log "github.com/golang/glog"
 	"net"
 )
 
 const messageDelimiter = byte('\n')
 
-// Consumer is a TCP layer that can wrap a Gonzo consumer to expose its functionality via TCP.
+// Consumer is a TCP layer that can wrap a Gonsumer to expose its functionality via TCP.
 type Consumer struct {
 	address        string
-	consumer       gonzo.Consumer
+	consumer       gonsumer.Consumer
 	customHandlers map[string]func([]byte) (*Response, error)
 
 	close  chan struct{}
 	closed chan struct{}
 }
 
-// NewConsumer wraps the given Gonzo consumer to listen for external commands on the given address.
-func NewConsumer(addr string, consumer gonzo.Consumer) *Consumer {
+// NewConsumer wraps the given Gonsumer to listen for external commands on the given address.
+func NewConsumer(addr string, consumer gonsumer.Consumer) *Consumer {
 	return &Consumer{
 		address:        addr,
 		consumer:       consumer,

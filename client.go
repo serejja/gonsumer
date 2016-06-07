@@ -13,9 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
 
-package gonzo
+package gonsumer
 
-import "github.com/elodina/siesta"
+import "github.com/serejja/siesta"
 
 // Client is an interface responsible for low-level Kafka interaction.
 // The only supported implmentation now is Siesta.
