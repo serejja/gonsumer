@@ -15,7 +15,7 @@ func main() {
 		panic(err)
 	}
 
-	consumer := gonsumer.NewConsumer(client, gonsumer.NewConsumerConfig(), consumerStrategy)
+	consumer := gonsumer.New(client, gonsumer.NewConfig(), consumerStrategy)
 	consumer.Add("gonsumer", 0)
 	consumer.Add("gonsumer", 1)
 

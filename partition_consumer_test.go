@@ -376,7 +376,7 @@ func TestPartitionConsumerAutoCommit(t *testing.T) {
 }
 
 func testConsumerConfig() *ConsumerConfig {
-	config := NewConsumerConfig()
+	config := NewConfig()
 	config.EnableMetrics = true
 	return config
 }

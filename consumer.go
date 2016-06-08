@@ -81,9 +81,9 @@ type KafkaConsumer struct {
 	partitionConsumerFactory func(client Client, config *ConsumerConfig, topic string, partition int32, strategy Strategy) PartitionConsumer
 }
 
-// NewConsumer creates a new Consumer using the given client and config.
+// New creates a new Consumer using the given client and config.
 // The message processing logic is passed via strategy.
-func NewConsumer(client Client, config *ConsumerConfig, strategy Strategy) Consumer {
+func New(client Client, config *ConsumerConfig, strategy Strategy) Consumer {
 	var metrics ConsumerMetrics = noOpConsumerMetrics
 	if config.EnableMetrics {
 		metrics = NewKafkaConsumerMetrics(config.Group, config.ConsumerID)

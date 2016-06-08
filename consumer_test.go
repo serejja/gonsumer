@@ -12,7 +12,7 @@ var NoOpStrategy = func(data *FetchData, consumer *KafkaPartitionConsumer) {}
 
 func TestConsumerAssignments(t *testing.T) {
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer := New(client, testConsumerConfig(), NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
 
 	// no assignments
@@ -72,7 +72,7 @@ func TestConsumerAssignments(t *testing.T) {
 
 func TestConsumerOffset(t *testing.T) {
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer := New(client, testConsumerConfig(), NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
 
 	// offset for non-existing
@@ -109,7 +109,7 @@ func TestConsumerOffset(t *testing.T) {
 func TestConsumerCommitOffset(t *testing.T) {
 	client := NewMockClient(0, 0)
 	config := testConsumerConfig()
-	consumer := NewConsumer(client, config, NoOpStrategy)
+	consumer := New(client, config, NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
 
 	err := consumer.Commit("asd", 0, 123)
@@ -120,7 +120,7 @@ func TestConsumerCommitOffset(t *testing.T) {
 
 func TestConsumerSetOffset(t *testing.T) {
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer := New(client, testConsumerConfig(), NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
 
 	// set for non-existing
@@ -151,7 +151,7 @@ func TestConsumerSetOffset(t *testing.T) {
 
 func TestConsumerLag(t *testing.T) {
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer := New(client, testConsumerConfig(), NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
 
 	// lag for non-existing
@@ -181,7 +181,7 @@ func TestConsumerLag(t *testing.T) {
 func TestConsumerAwaitTermination(t *testing.T) {
 	timeout := time.Second
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer := New(client, testConsumerConfig(), NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
 
 	success := make(chan struct{})
@@ -206,7 +206,7 @@ func TestConsumerJoin(t *testing.T) {
 	partition := int32(0)
 
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer := New(client, testConsumerConfig(), NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
 
 	success := make(chan struct{})
@@ -250,13 +250,13 @@ func TestConsumerJoin(t *testing.T) {
 
 func TestConsumerMetrics(t *testing.T) {
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, NewConsumerConfig(), NoOpStrategy)
+	consumer := New(client, NewConfig(), NoOpStrategy)
 
 	m, err := consumer.ConsumerMetrics()
 	assert.Nil(t, m)
 	assert.Equal(t, ErrMetricsDisabled, err)
 
-	consumer = NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer = New(client, testConsumerConfig(), NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
 	consumer.Add("foo", 0)
 
@@ -273,14 +273,14 @@ func TestConsumerMetrics(t *testing.T) {
 
 func TestPartitionConsumerMetrics(t *testing.T) {
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, NewConsumerConfig(), NoOpStrategy)
+	consumer := New(client, NewConfig(), NoOpStrategy)
 
 	m, err := consumer.PartitionConsumerMetrics("foo", 0)
 	assert.Nil(t, m)
 	assert.Equal(t, ErrMetricsDisabled, err)
 
 	// enable metrics but don't add topic/partition
-	consumer = NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer = New(client, testConsumerConfig(), NoOpStrategy)
 
 	m, err = consumer.PartitionConsumerMetrics("foo", 0)
 	assert.Nil(t, m)
@@ -295,13 +295,13 @@ func TestPartitionConsumerMetrics(t *testing.T) {
 
 func TestAllMetrics(t *testing.T) {
 	client := NewMockClient(0, 0)
-	consumer := NewConsumer(client, NewConsumerConfig(), NoOpStrategy)
+	consumer := New(client, NewConfig(), NoOpStrategy)
 
 	m, err := consumer.AllMetrics()
 	assert.Nil(t, m)
 	assert.Equal(t, ErrMetricsDisabled, err)
 
-	consumer = NewConsumer(client, testConsumerConfig(), NoOpStrategy)
+	consumer = New(client, testConsumerConfig(), NoOpStrategy)
 
 	m, err = consumer.AllMetrics()
 	assert.Nil(t, err)

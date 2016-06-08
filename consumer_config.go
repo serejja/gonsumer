@@ -39,8 +39,8 @@ type ConsumerConfig struct {
 	InitOffsetBackoff time.Duration
 }
 
-// NewConsumerConfig creates a consumer config with sane defaults.
-func NewConsumerConfig() *ConsumerConfig {
+// NewConfig creates a consumer config with sane defaults.
+func NewConfig() *ConsumerConfig {
 	return &ConsumerConfig{
 		Group:             "gonsumer-group",
 		ConsumerID:        uuid.NewV4().String(),

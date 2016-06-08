@@ -15,7 +15,7 @@ func main() {
 		panic(err)
 	}
 
-	consumer := gonsumer.NewPartitionConsumer(client, gonsumer.NewConsumerConfig(), "gonsumer", 0, partitionConsumerStrategy)
+	consumer := gonsumer.NewPartitionConsumer(client, gonsumer.NewConfig(), "gonsumer", 0, partitionConsumerStrategy)
 
 	consumer.Start()
 }
