@@ -3,19 +3,19 @@ package main
 import (
 	"fmt"
 	"github.com/serejja/gonsumer"
-	"github.com/serejja/siesta"
+	"github.com/serejja/kafka-client"
 )
 
 func main() {
-	config := siesta.NewConnectorConfig()
+	config := client.NewConfig()
 	config.BrokerList = []string{"localhost:9092"}
 
-	client, err := siesta.NewDefaultConnector(config)
+	kafka, err := client.New(config)
 	if err != nil {
 		panic(err)
 	}
 
-	consumer := gonsumer.NewPartitionConsumer(client, gonsumer.NewConfig(), "gonsumer", 0, partitionConsumerStrategy)
+	consumer := gonsumer.NewPartitionConsumer(kafka, gonsumer.NewConfig(), "gonsumer", 0, partitionConsumerStrategy)
 
 	consumer.Start()
 }

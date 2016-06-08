@@ -2,7 +2,7 @@ package gonsumer
 
 import (
 	"github.com/rcrowley/go-metrics"
-	"github.com/serejja/siesta"
+	"github.com/serejja/kafka-client"
 	"github.com/yanzay/log"
 	"sync/atomic"
 	"time"
@@ -37,7 +37,7 @@ type PartitionConsumer interface {
 
 // KafkaPartitionConsumer serves to consume exactly one topic/partition from Kafka.
 // This is very similar to JVM SimpleConsumer except the PartitionConsumer is able to handle
-// leader changes and supports committing offsets to Kafka via Siesta client.
+// leader changes and supports committing offsets to Kafka via kafka-client.
 type KafkaPartitionConsumer struct {
 	client              Client
 	config              *ConsumerConfig
@@ -88,7 +88,7 @@ func (pc *KafkaPartitionConsumer) Start() {
 			}
 		default:
 			{
-				var response *siesta.FetchResponse
+				var response *client.FetchResponse
 				var err error
 				if pc.config.EnableMetrics {
 					pc.metrics.FetchDuration(func(fetchDuration metrics.Timer) {
@@ -135,7 +135,7 @@ func (pc *KafkaPartitionConsumer) Start() {
 					atomic.StoreInt64(&pc.offset, data.Messages[offsetIndex].Offset+1)
 				}
 
-				//TODO siesta could probably support size hints? feel like quick traversal of messages should be quicker
+				//TODO kafka-client could probably support size hints? feel like quick traversal of messages should be quicker
 				// than appending to a slice if it resizes internally, should benchmark this
 				var messages []*MessageAndMetadata
 				collector := pc.collectorFunc(&messages)
@@ -232,7 +232,7 @@ func (pc *KafkaPartitionConsumer) initOffset() bool {
 	for {
 		offset, err := pc.client.GetOffset(pc.config.Group, pc.topic, pc.partition)
 		if err != nil {
-			if err == siesta.ErrUnknownTopicOrPartition {
+			if err == client.ErrUnknownTopicOrPartition {
 				return pc.resetOffset()
 			}
 			log.Warningf("Cannot get offset for group %s, topic %s, partition %d: %s\n", pc.config.Group, pc.topic, pc.partition, err)

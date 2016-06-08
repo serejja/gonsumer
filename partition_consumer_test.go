@@ -2,7 +2,7 @@ package gonsumer
 
 import (
 	"fmt"
-	"github.com/serejja/siesta"
+	"github.com/serejja/kafka-client"
 	"github.com/yanzay/log"
 	"gopkg.in/stretchr/testify.v1/assert"
 	"testing"
@@ -163,15 +163,15 @@ func TestPartitionConsumerEmptyFetch(t *testing.T) {
 
 func TestPartitionConsumerFetchError(t *testing.T) {
 	strategy := func(data *FetchData, consumer *KafkaPartitionConsumer) {
-		assert.Equal(t, siesta.ErrEOF, data.Error)
+		assert.Equal(t, client.ErrEOF, data.Error)
 
 		consumer.Stop()
 	}
 
-	client := NewMockClient(0, 200)
-	client.fetchError = siesta.ErrEOF
-	client.fetchErrorTimes = 1
-	consumer := NewPartitionConsumer(client, testConsumerConfig(), "test", 0, strategy)
+	kafkaClient := NewMockClient(0, 200)
+	kafkaClient.fetchError = client.ErrEOF
+	kafkaClient.fetchErrorTimes = 1
+	consumer := NewPartitionConsumer(kafkaClient, testConsumerConfig(), "test", 0, strategy)
 
 	consumer.Start()
 }
@@ -196,9 +196,9 @@ func TestPartitionConsumerFetchResponseError(t *testing.T) {
 		}
 	}
 
-	client := NewMockClient(0, int64(expectedMessages))
-	client.fetchError = siesta.ErrUnknownTopicOrPartition
-	consumer := NewPartitionConsumer(client, testConsumerConfig(), topic, partition, strategy)
+	kafkaClient := NewMockClient(0, int64(expectedMessages))
+	kafkaClient.fetchError = client.ErrUnknownTopicOrPartition
+	consumer := NewPartitionConsumer(kafkaClient, testConsumerConfig(), topic, partition, strategy)
 
 	consumer.Start()
 }
@@ -223,12 +223,12 @@ func TestPartitionConsumerGetOffsetErrors(t *testing.T) {
 		}
 	}
 
-	client := NewMockClient(0, int64(expectedMessages))
-	client.getOffsetError = siesta.ErrUnknownTopicOrPartition
-	client.getOffsetErrorTimes = 2
-	client.getAvailableOffsetError = siesta.ErrEOF
-	client.getAvailableOffsetErrorTimes = 2
-	consumer := NewPartitionConsumer(client, testConsumerConfig(), topic, partition, strategy)
+	kafkaClient := NewMockClient(0, int64(expectedMessages))
+	kafkaClient.getOffsetError = client.ErrUnknownTopicOrPartition
+	kafkaClient.getOffsetErrorTimes = 2
+	kafkaClient.getAvailableOffsetError = client.ErrEOF
+	kafkaClient.getAvailableOffsetErrorTimes = 2
+	consumer := NewPartitionConsumer(kafkaClient, testConsumerConfig(), topic, partition, strategy)
 
 	consumer.Start()
 }
@@ -242,12 +242,12 @@ func TestPartitionConsumerStopOnInitOffset(t *testing.T) {
 		t.Fatal("Should not reach here")
 	}
 
-	client := NewMockClient(0, int64(expectedMessages))
-	client.getOffsetError = siesta.ErrUnknownTopicOrPartition
-	client.getOffsetErrorTimes = 3
-	client.getAvailableOffsetError = siesta.ErrEOF
-	client.getAvailableOffsetErrorTimes = 3
-	consumer := NewPartitionConsumer(client, testConsumerConfig(), topic, partition, strategy)
+	kafkaClient := NewMockClient(0, int64(expectedMessages))
+	kafkaClient.getOffsetError = client.ErrUnknownTopicOrPartition
+	kafkaClient.getOffsetErrorTimes = 3
+	kafkaClient.getAvailableOffsetError = client.ErrEOF
+	kafkaClient.getAvailableOffsetErrorTimes = 3
+	consumer := NewPartitionConsumer(kafkaClient, testConsumerConfig(), topic, partition, strategy)
 
 	go func() {
 		time.Sleep(1 * time.Second)
@@ -265,12 +265,12 @@ func TestPartitionConsumerStopOnOffsetReset(t *testing.T) {
 		t.Fatal("Should not reach here")
 	}
 
-	client := NewMockClient(0, int64(expectedMessages))
-	client.getOffsetError = siesta.ErrNotCoordinatorForConsumerCode
-	client.getOffsetErrorTimes = 3
-	client.getAvailableOffsetError = siesta.ErrEOF
-	client.getAvailableOffsetErrorTimes = 3
-	consumer := NewPartitionConsumer(client, testConsumerConfig(), topic, partition, strategy)
+	kafkaClient := NewMockClient(0, int64(expectedMessages))
+	kafkaClient.getOffsetError = client.ErrNotCoordinatorForConsumerCode
+	kafkaClient.getOffsetErrorTimes = 3
+	kafkaClient.getAvailableOffsetError = client.ErrEOF
+	kafkaClient.getAvailableOffsetErrorTimes = 3
+	consumer := NewPartitionConsumer(kafkaClient, testConsumerConfig(), topic, partition, strategy)
 
 	go func() {
 		time.Sleep(1 * time.Second)

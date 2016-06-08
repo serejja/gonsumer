@@ -2,7 +2,7 @@ package gonsumer
 
 import (
 	"github.com/satori/go.uuid"
-	"github.com/serejja/siesta"
+	"github.com/serejja/kafka-client"
 	"time"
 )
 
@@ -22,9 +22,9 @@ type ConsumerConfig struct {
 	ValueDecoder Decoder
 
 	// AutoOffsetReset defines what to do when there is no committed offset or committed offset is out of range.
-	// siesta.EarliestTime - automatically reset the offset to the smallest offset.
-	// siesta.LatestTime - automatically reset the offset to the largest offset.
-	// Defaults to siesta.EarliestTime.
+	// kafka-client.EarliestTime - automatically reset the offset to the smallest offset.
+	// kafka-client.LatestTime - automatically reset the offset to the largest offset.
+	// Defaults to kafka-client.EarliestTime.
 	AutoOffsetReset int64
 
 	// AutoCommitEnable determines whether the consumer will automatically commit offsets after each batch
@@ -46,7 +46,7 @@ func NewConfig() *ConsumerConfig {
 		ConsumerID:        uuid.NewV4().String(),
 		KeyDecoder:        ByteDecoder,
 		ValueDecoder:      ByteDecoder,
-		AutoOffsetReset:   siesta.EarliestTime,
+		AutoOffsetReset:   client.EarliestTime,
 		InitOffsetBackoff: 500 * time.Millisecond,
 	}
 }

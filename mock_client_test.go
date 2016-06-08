@@ -2,7 +2,7 @@ package gonsumer
 
 import (
 	"fmt"
-	"github.com/serejja/siesta"
+	"github.com/serejja/kafka-client"
 	"github.com/yanzay/log"
 	"gopkg.in/stretchr/testify.v1/assert"
 	"testing"
@@ -31,7 +31,7 @@ type MockClient struct {
 func NewMockClient(startOffset int64, highwaterMarkOffset int64) *MockClient {
 	return &MockClient{
 		fetchSize:           100,
-		fetchResponseError:  siesta.ErrNoError,
+		fetchResponseError:  client.ErrNoError,
 		offset:              startOffset,
 		highwaterMarkOffset: highwaterMarkOffset,
 		offsets:             make(map[string]map[string]map[int32]int64),
@@ -39,7 +39,7 @@ func NewMockClient(startOffset int64, highwaterMarkOffset int64) *MockClient {
 	}
 }
 
-func (mc *MockClient) Fetch(topic string, partition int32, offset int64) (*siesta.FetchResponse, error) {
+func (mc *MockClient) Fetch(topic string, partition int32, offset int64) (*client.FetchResponse, error) {
 	log.Debugf("MockClient.Fetch(%s, %d, %d)", topic, partition, offset)
 	mc.offset = offset
 	if mc.fetchErrorTimes > 0 {
@@ -48,14 +48,14 @@ func (mc *MockClient) Fetch(topic string, partition int32, offset int64) (*siest
 		return nil, mc.fetchError
 	}
 
-	responseData := make(map[string]map[int32]*siesta.FetchResponsePartitionData)
-	responseData[topic] = make(map[int32]*siesta.FetchResponsePartitionData)
-	responseData[topic][partition] = &siesta.FetchResponsePartitionData{
+	responseData := make(map[string]map[int32]*client.FetchResponsePartitionData)
+	responseData[topic] = make(map[int32]*client.FetchResponsePartitionData)
+	responseData[topic][partition] = &client.FetchResponsePartitionData{
 		Error:               mc.fetchResponseError,
 		HighwaterMarkOffset: mc.highwaterMarkOffset,
 	}
 
-	var messages []*siesta.MessageAndOffset
+	var messages []*client.MessageAndOffset
 	for i := 0; i < int(mc.fetchSize); i++ {
 		if mc.emptyFetches > 0 {
 			mc.emptyFetches--
@@ -64,9 +64,9 @@ func (mc *MockClient) Fetch(topic string, partition int32, offset int64) (*siest
 		if mc.offset == mc.highwaterMarkOffset {
 			break
 		}
-		messages = append(messages, &siesta.MessageAndOffset{
+		messages = append(messages, &client.MessageAndOffset{
 			Offset: offset + int64(i),
-			Message: &siesta.Message{
+			Message: &client.Message{
 				Value: []byte(fmt.Sprintf("message-%d", offset+int64(i))),
 			},
 		})
@@ -75,7 +75,7 @@ func (mc *MockClient) Fetch(topic string, partition int32, offset int64) (*siest
 
 	responseData[topic][partition].Messages = messages
 
-	return &siesta.FetchResponse{
+	return &client.FetchResponse{
 		Data: responseData,
 	}, nil
 }
@@ -130,14 +130,14 @@ func (mc *MockClient) initCommitCounts(group string, topic string, partition int
 }
 
 func TestMockClientGoodFetch(t *testing.T) {
-	client := NewMockClient(0, 200)
-	response, err := client.Fetch("test", 0, 0)
+	kafkaClient := NewMockClient(0, 200)
+	response, err := kafkaClient.Fetch("test", 0, 0)
 	assert.Equal(t, nil, err)
 	assert.Len(t, response.Data, 1)
 	assert.Len(t, response.Data["test"], 1)
-	assert.Equal(t, siesta.ErrNoError, response.Data["test"][0].Error)
-	assert.Len(t, response.Data["test"][0].Messages, int(client.fetchSize))
-	assert.Equal(t, client.highwaterMarkOffset, response.Data["test"][0].HighwaterMarkOffset)
+	assert.Equal(t, client.ErrNoError, response.Data["test"][0].Error)
+	assert.Len(t, response.Data["test"][0].Messages, int(kafkaClient.fetchSize))
+	assert.Equal(t, kafkaClient.highwaterMarkOffset, response.Data["test"][0].HighwaterMarkOffset)
 
 	for i := 0; i < 100; i++ {
 		assert.Equal(t, int64(i), response.Data["test"][0].Messages[i].Offset)
@@ -146,11 +146,11 @@ func TestMockClientGoodFetch(t *testing.T) {
 }
 
 func TestMockClientBadFetch(t *testing.T) {
-	client := NewMockClient(0, 100)
-	client.fetchResponseError = siesta.ErrBrokerNotAvailable
-	response, err := client.Fetch("test", 0, 0)
+	kafkaClient := NewMockClient(0, 100)
+	kafkaClient.fetchResponseError = client.ErrBrokerNotAvailable
+	response, err := kafkaClient.Fetch("test", 0, 0)
 	assert.Equal(t, nil, err)
 	assert.Len(t, response.Data, 1)
 	assert.Len(t, response.Data["test"], 1)
-	assert.Equal(t, siesta.ErrBrokerNotAvailable, response.Data["test"][0].Error)
+	assert.Equal(t, client.ErrBrokerNotAvailable, response.Data["test"][0].Error)
 }
