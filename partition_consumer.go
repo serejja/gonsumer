@@ -154,15 +154,17 @@ func (pc *KafkaPartitionConsumer) Start() {
 					pc.metrics.BatchDuration(func(batchDuration metrics.Timer) {
 						batchDuration.Time(func() {
 							pc.strategy(&FetchData{
-								Messages: messages,
-								Error:    err,
+								Messages:            messages,
+								HighwaterMarkOffset: data.HighwaterMarkOffset,
+								Error:               err,
 							}, pc)
 						})
 					})
 				} else {
 					pc.strategy(&FetchData{
-						Messages: messages,
-						Error:    err,
+						Messages:            messages,
+						HighwaterMarkOffset: data.HighwaterMarkOffset,
+						Error:               err,
 					}, pc)
 				}
 

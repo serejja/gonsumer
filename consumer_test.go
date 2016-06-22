@@ -258,7 +258,8 @@ func TestConsumerMetrics(t *testing.T) {
 
 	consumer = New(client, testConsumerConfig(), NoOpStrategy)
 	consumer.(*KafkaConsumer).partitionConsumerFactory = NewMockPartitionConsumer
-	consumer.Add("foo", 0)
+	err = consumer.Add("foo", 0)
+	assert.Nil(t, err)
 
 	m, err = consumer.ConsumerMetrics()
 	assert.Nil(t, err)
@@ -287,7 +288,8 @@ func TestPartitionConsumerMetrics(t *testing.T) {
 	assert.Equal(t, ErrPartitionConsumerDoesNotExist, err)
 
 	// now add
-	consumer.Add("foo", 0)
+	err = consumer.Add("foo", 0)
+	assert.Nil(t, err)
 
 	_, err = consumer.PartitionConsumerMetrics("foo", 0)
 	assert.Nil(t, err)
@@ -309,7 +311,8 @@ func TestAllMetrics(t *testing.T) {
 	assert.NotNil(t, m.PartitionConsumers)
 	assert.Len(t, m.PartitionConsumers, 0)
 
-	consumer.Add("foo", 0)
+	err = consumer.Add("foo", 0)
+	assert.Nil(t, err)
 
 	m, err = consumer.AllMetrics()
 	assert.Nil(t, err)
@@ -317,4 +320,6 @@ func TestAllMetrics(t *testing.T) {
 	assert.NotNil(t, m.PartitionConsumers)
 	assert.Len(t, m.PartitionConsumers, 1)
 	assert.Len(t, m.PartitionConsumers["foo"], 1)
+
+	assert.NotNil(t, m.Consumer.Registry())
 }

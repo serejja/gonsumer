@@ -335,7 +335,8 @@ func TestPartitionConsumerCommit(t *testing.T) {
 	strategy := func(data *FetchData, consumer *KafkaPartitionConsumer) {
 		assert.Equal(t, nil, data.Error)
 
-		consumer.Commit(data.Messages[len(data.Messages)-1].Offset)
+		err := consumer.Commit(data.Messages[len(data.Messages)-1].Offset)
+		assert.Nil(t, err)
 		consumer.Stop()
 	}
 

@@ -220,7 +220,10 @@ func (c *KafkaConsumer) Lag(topic string, partition int32) (int64, error) {
 func (c *KafkaConsumer) Stop() {
 	for topic, partitions := range c.Assignment() {
 		for _, partition := range partitions {
-			c.Remove(topic, partition)
+			err := c.Remove(topic, partition)
+			if err != nil {
+				log.Errorf("Failed to remove partition consumer for topic %s, partition %d: %s", topic, partition, err)
+			}
 		}
 	}
 	c.metrics.Stop()
